@@ -11,7 +11,7 @@ AUTHORIZED_SERVERS = [
 ]
 
 SERVER_KNOWLEDGE = {
-    1378864322687537262: "You are the support bot for The Silk Road. You help users with questions about the community and services.",
+    1378864322687537262: "You are the support bot for The Silk Road. You help users with questions about the community and services. You can answer any question a member asks. Be kind and friendly and keep your answers short.",
 }
 
 # ============================================================================
@@ -47,7 +47,7 @@ async def ping(ctx):
 async def ask(ctx, *, question: str):
     # Check Paywall
     if ctx.guild.id not in AUTHORIZED_SERVERS:
-        await ctx.send("🔒 **Premium Required.** Contact EXTEKK.")
+        await ctx.send("🔒 **Premium Required.** Contact The Silk Road.")
         return
 
     async with ctx.typing():
@@ -69,7 +69,7 @@ async def ask(ctx, *, question: str):
                 description=answer, 
                 color=0x81c784
             )
-            embed.set_footer(text=f"AI Support for {ctx.guild.name} • Powered by EXTEKK")
+            embed.set_footer(text=f"AI Support for {ctx.guild.name} • Powered by The Silk Road")
             await ctx.send(embed=embed)
             
         except Exception as e:
