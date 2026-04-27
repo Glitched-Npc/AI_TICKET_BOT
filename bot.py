@@ -65,11 +65,11 @@ async def ask(ctx, *, question: str):
             answer = chat_completion.choices[0].message.content.strip()
             
             embed = discord.Embed(
-                title="🤖 AI SUPPORT RESPONSE", 
+                title="🗩 AI SUPPORT RESPONSE", 
                 description=answer, 
                 color=0x81c784
             )
-            embed.set_footer(text=f"AI Support for {ctx.guild.name} • Powered by The Silk Road")
+            embed.set_footer(text=f"AI Support for {ctx.guild.name} • Made for Discord")
             await ctx.send(embed=embed)
             
         except Exception as e:
