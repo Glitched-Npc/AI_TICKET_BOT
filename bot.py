@@ -9,14 +9,14 @@ import os
 
 # 1. Add Paid Server IDs here
 AUTHORIZED_SERVERS = [
-    123456789012345678,  # Your Server
+    1378864322687537262,  # Your Server
     # 222222222222222222, # Customer Server 1
 ]
 
 # 2. Teach the bot for each server here.
 # Copy the Server ID, then paste their custom instructions.
 SERVER_KNOWLEDGE = {
-    123456789012345678: "You are the support bot for EXTEKK. We sell AI Discord bots. Our support hours are 9am-5pm. Our website is extekk.com.",
+    123456789012345678: "You are the support bot for The Silk Road. We sell AI Discord bots. Our support hours are 9am-5pm. Our website is thesilkroad.mysellauth.com.",
     
     # Example for a customer:
     # 222222222222222222: "You are the bot for 'Pizza Planet'. We offer Pepperoni and Cheese. Delivery takes 30 mins. Do not answer questions about burgers."
