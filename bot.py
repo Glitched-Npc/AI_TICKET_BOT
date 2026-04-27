@@ -65,7 +65,7 @@ async def ask(ctx, *, question: str):
             answer = chat_completion.choices[0].message.content.strip()
             
             embed = discord.Embed(
-                title="🗩 AI SUPPORT RESPONSE", 
+                title="🤖 AI SUPPORT RESPONSE", 
                 description=answer, 
                 color=0x81c784
             )
