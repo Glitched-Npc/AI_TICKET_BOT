@@ -4,14 +4,14 @@ from groq import Groq
 import os
 
 # ============================================================================
-# 🟢 BUSINESS PANEL
+# 🟢 BUSINESS PANEL (SYNCED WITH YOUR ID)
 # ============================================================================
 AUTHORIZED_SERVERS = [
-    1378864322687537262, 
+    1378864322687537262, # Your Server ID
 ]
 
 SERVER_KNOWLEDGE = {
-    1378864322687537262: "You are the support bot for The Silk Road.",
+    1378864322687537262: "You are the support bot for The Silk Road. You help users with questions about the community and services.",
 }
 
 # ============================================================================
@@ -22,35 +22,29 @@ DISCORD_BOT_TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
 intents.message_content = True 
-intents.guilds = True
 
-# We add case_insensitive=True so !ASK and !ask both work
+# case_insensitive=True means !ASK and !ask both work
 bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 client = Groq(api_key=GROQ_API_KEY)
 
 @bot.event
 async def on_ready():
     print(f'✅ Bot is ONLINE as {bot.user}')
-    # BRAIN CHECK: This prints the commands the bot knows
-    print(f'🤖 Loaded Commands: {[cmd.name for cmd in bot.commands]}')
+    # This checks if the commands are actually loaded
+    print(f'🤖 Commands loaded: {[cmd.name for cmd in bot.commands]}')
 
 # ============================================================================
 # 🏓 COMMAND: !ping
 # ============================================================================
-@bot.command(name="ping")
+@bot.command()
 async def ping(ctx):
-    await ctx.send("🏓 **Pong!** I can hear you and my commands are working!")
+    await ctx.send("🏓 **Pong!** I am alive and my commands are working!")
 
 # ============================================================================
 # 🎫 COMMAND: !ask
 # ============================================================================
-@bot.command(name="ask")
-async def ask(ctx, *, question: str = None):
-    # Check if they actually asked a question
-    if question is None:
-        await ctx.send("❓ Please provide a question. Example: `!ask What is this server?`")
-        return
-
+@bot.command()
+async def ask(ctx, *, question: str):
     # Check Paywall
     if ctx.guild.id not in AUTHORIZED_SERVERS:
         await ctx.send("🔒 **Premium Required.** Contact EXTEKK.")
@@ -59,6 +53,7 @@ async def ask(ctx, *, question: str = None):
     async with ctx.typing():
         try:
             instructions = SERVER_KNOWLEDGE.get(ctx.guild.id, "You are a helpful assistant.")
+            
             chat_completion = client.chat.completions.create(
                 messages=[
                     {"role": "system", "content": instructions},
@@ -69,10 +64,16 @@ async def ask(ctx, *, question: str = None):
             )
             answer = chat_completion.choices[0].message.content.strip()
             
-            embed = discord.Embed(title="🤖 AI RESPONSE", description=answer, color=0x81c784)
+            embed = discord.Embed(
+                title="🤖 AI SUPPORT RESPONSE", 
+                description=answer, 
+                color=0x81c784
+            )
+            embed.set_footer(text=f"AI Support for {ctx.guild.name} • Powered by EXTEKK")
             await ctx.send(embed=embed)
+            
         except Exception as e:
-            await ctx.send(f"❌ Error: {str(e)}")
+            await ctx.send(f"❌ **Error:** {str(e)}")
 
 # Run the bot
 bot.run(DISCORD_BOT_TOKEN)
