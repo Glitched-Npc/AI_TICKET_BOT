@@ -4,20 +4,14 @@ from groq import Groq
 import os
 
 # ============================================================================
-# 🟢 BUSINESS PANEL: MANAGE CUSTOMERS HERE
+# 🟢 BUSINESS PANEL
 # ============================================================================
-
-# 1. Add Paid Server IDs here
 AUTHORIZED_SERVERS = [
-    1378864322687537262,  # <--- REPLACE WITH YOUR SERVER ID
+    123456789012345678, # <--- DOUBLE CHECK THIS ID IS CORRECT
 ]
 
-# 2. Teach the bot for each server here
 SERVER_KNOWLEDGE = {
-    123456789012345678: "You are the support bot for The Silk Road. We sell AI bots. Support hours: 24/7 Support. Website: thesilkroad.mysellauth.com",
-    
-    # Add customers like this:
-    # 987654321098765432: "You are the bot for [Store Name]. We sell [Products].",
+    123456789012345678: "You are a support bot for EXTEKK.",
 }
 
 # ============================================================================
@@ -27,37 +21,44 @@ GROQ_API_KEY = os.getenv('GROQ_KEY')
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
-intents.message_content = True # Required to read the !ask command
+intents.message_content = True 
+intents.guilds = True
+
 bot = commands.Bot(command_prefix="!", intents=intents)
 client = Groq(api_key=GROQ_API_KEY)
 
 @bot.event
 async def on_ready():
-    print(f'✅ AI Support Bot Online as {bot.user}')
-    print('Prefix set to !')
+    print(f'✅ Bot is ONLINE as {bot.user}')
+    print(f'✅ I am in {len(bot.guilds)} servers')
+
+# This will print EVERY message the bot sees to the Railway logs
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+    print(f"📩 I saw a message: '{message.content}' in server {message.guild.id}")
+    await bot.process_commands(message)
 
 # ============================================================================
-# 🎫 CLASSIC COMMAND: !ask <question>
+# 🏓 DEBUG COMMAND: !ping
+# ============================================================================
+@bot.command()
+async def ping(ctx):
+    await ctx.send("🏓 Pong! I am alive and can see your messages!")
+
+# ============================================================================
+# 🎫 AI COMMAND: !ask
 # ============================================================================
 @bot.command()
 async def ask(ctx, *, question: str):
-    
-    # Check if server is authorized
     if ctx.guild.id not in AUTHORIZED_SERVERS:
-        embed_error = discord.Embed(
-            title="🔒 Premium Required",
-            description="Contact **The Silk Road** to enable AI Support for this server.",
-            color=0xff5350 
-        )
-        await ctx.send(embed=embed_error)
+        await ctx.send("🔒 Premium Required. This server ID is not authorized.")
         return
 
     async with ctx.typing():
         try:
-            # Get this server's specific training
             instructions = SERVER_KNOWLEDGE.get(ctx.guild.id, "You are a helpful assistant.")
-
-            # Call Groq
             chat_completion = client.chat.completions.create(
                 messages=[
                     {"role": "system", "content": instructions},
@@ -67,18 +68,10 @@ async def ask(ctx, *, question: str):
                 temperature=0.5,
             )
             answer = chat_completion.choices[0].message.content.strip()
-
-            # Professional Support Embed
-            embed = discord.Embed(
-                title="🤖 AI SUPPORT RESPONSE",
-                description=answer,
-                color=0x81c784
-            )
-            embed.set_footer(text=f"AI Support for {ctx.guild.name} • Powered by EXTEKK")
             
+            embed = discord.Embed(title="🤖 AI RESPONSE", description=answer, color=0x81c784)
             await ctx.send(embed=embed)
-
         except Exception as e:
-            await ctx.send(f"❌ **Error:** {str(e)}")
+            await ctx.send(f"❌ Error: {str(e)}")
 
 bot.run(DISCORD_BOT_TOKEN)
