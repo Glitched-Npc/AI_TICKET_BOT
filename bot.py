@@ -7,11 +7,11 @@ import os
 # 🟢 BUSINESS PANEL
 # ============================================================================
 AUTHORIZED_SERVERS = [
-    123456789012345678, # <--- DOUBLE CHECK THIS ID IS CORRECT
+    1378864322687537262, # <--- DOUBLE CHECK THIS ID IS CORRECT
 ]
 
 SERVER_KNOWLEDGE = {
-    123456789012345678: "You are a support bot for EXTEKK.",
+    123456789012345678: "You are a support bot for The Silk Road.",
 }
 
 # ============================================================================
